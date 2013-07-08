@@ -43,8 +43,8 @@ public class Unit : WorldObject {
 		}
 	}
 	
-	public override void MouseClick(GameObject hitObject, Vector3 hitPoint, Player controller) {
-		base.MouseClick (hitObject, hitPoint, controller);
+	public override void ActionClick(GameObject hitObject, Vector3 hitPoint, Player controller) {
+		base.ActionClick (hitObject, hitPoint, controller);
 		
 		if(player && player.human && currentlySelected) {
 			if(hitObject.name == "Ground" && hitPoint != ResourceManager.InvalidPosition) {

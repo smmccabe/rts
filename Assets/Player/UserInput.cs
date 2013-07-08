@@ -112,6 +112,7 @@ public class UserInput : MonoBehaviour {
 						}
 						player.SelectedObject = worldObject;
 						worldObject.SetSelection(true, player.hud.GetPlayingArea());
+						player.SelectedObject.SelectClick (hitObject, hitPoint, player);
 					}
 				}
 				else if(player.SelectedObject){
@@ -128,7 +129,7 @@ public class UserInput : MonoBehaviour {
 			GameObject hitObject = FindHitObject();
 			Vector3 hitPoint = FindHitPoint();
 			if(player.SelectedObject && hitObject && hitPoint != ResourceManager.InvalidPosition){
-				player.SelectedObject.MouseClick(hitObject, hitPoint, player);
+				player.SelectedObject.ActionClick(hitObject, hitPoint, player);
 			}
 		}
 	}

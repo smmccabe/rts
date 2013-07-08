@@ -58,7 +58,7 @@ public class WorldObject : MonoBehaviour {
 		
 	}
 	
-	public virtual void MouseClick(GameObject hitObject, Vector3 hitPoint, Player controller) {
+	public virtual void SelectClick(GameObject hitObject, Vector3 hitPoint, Player controller) {
 		if(currentlySelected && hitObject && hitObject.name != "Ground") {
 			WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject>();
 			
@@ -66,6 +66,10 @@ public class WorldObject : MonoBehaviour {
 				ChangeSelection(worldObject, controller);	
 			}
 		}
+	}
+	
+	public virtual void ActionClick(GameObject hitObject, Vector3 hitPoint, Player controller){
+		
 	}
 	
 	public virtual void SetHoverState(GameObject hoverObject){
