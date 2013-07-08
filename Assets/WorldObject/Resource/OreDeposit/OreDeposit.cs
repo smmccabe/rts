@@ -8,7 +8,7 @@ public class OreDeposit : Resource {
 	protected override void Start() {
 		base.Start ();
 		
-		numBlocks = GetComponentsInChildren().Length;
+		numBlocks = GetComponentsInChildren<Ore>().Length;
 		resourceType = ResourceType.Ore;
 	}
 	
@@ -21,13 +21,13 @@ public class OreDeposit : Resource {
 		}
 		
 		int numBlocksToShow = (int)(percentLeft * numBlocks);
-		Ore[] blocks = GetComponentInChildren<Ore>();
+		Ore[] blocks = GetComponentsInChildren<Ore>();
 		
 		if(numBlocksToShow >= 0 && numBlocksToShow < blocks.Length) {
 			Ore[] sortedBlocks = new Ore[blocks.Length];
 			
 			foreach(Ore ore in blocks) {
-				sortedBlocks[blocks.length - int.Parse(ore.name)] = Ore;	
+				sortedBlocks[blocks.Length - int.Parse(ore.name)] = ore;	
 			}
 			for(int i = numBlocksToShow; i < sortedBlocks.Length; i++) {
 				sortedBlocks[i].renderer.enabled = false;

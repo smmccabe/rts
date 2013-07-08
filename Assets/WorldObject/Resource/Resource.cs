@@ -12,7 +12,7 @@ public class Resource : WorldObject {
 		base.Start();
 		
 		amountLeft = capacity;
-		resourceType = resourceType.Unknown;
+		resourceType = ResourceType.Unknown;
 	}
 	
 	public void Remove(float amount) {
