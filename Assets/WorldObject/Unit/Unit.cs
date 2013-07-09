@@ -9,6 +9,7 @@ public class Unit : WorldObject {
 	
 	private Vector3 destination;
 	private Quaternion targetRotation;
+	private GameObject destinationTarget;
 	
     protected override void Awake() {
         base.Awake();
@@ -59,10 +60,18 @@ public class Unit : WorldObject {
 	}
 	
 	public void StartMove(Vector3 destination) {
+		this.destinationTarget = null;
+		
 		this.destination = destination;
 		targetRotation = Quaternion.LookRotation(destination - transform.position);
 		rotating = true;
 		moving = false;
+	}
+	
+	public void StartMove(Vector3 destination, GameObject destinationTarget) {
+		StartMove(destination);
+		
+		this.destinationTarget = destinationTarget;
 	}
 	
 	private void TurnToTarget() {
@@ -72,8 +81,14 @@ public class Unit : WorldObject {
 		if(transform.rotation == targetRotation || transform.rotation == inverseTargetRotation) {
 			rotating = false;
 			moving = true;
+			
+			if(destinationTarget) {
+				CalculateTargetDestination();
+			}
 		}
 		CalculateBounds();
+		
+		Debug.Log ("Turning Destination: " + destination);
 	}
 	
 	private void MakeMove() {
@@ -83,5 +98,42 @@ public class Unit : WorldObject {
 			moving = false;
 		}
 		CalculateBounds();
+	}
+	
+	private void CalculateTargetDestination() {
+		Vector3 originalExtents = selectionBounds.extents;
+		Vector3 normalExtents = originalExtents;
+		normalExtents.Normalize();
+		
+		float numberOfExtents = originalExtents.x / normalExtents.x;
+		int unitShift = Mathf.FloorToInt(numberOfExtents);
+		
+		WorldObject worldObject = destinationTarget.GetComponent<WorldObject>();
+		
+		if(worldObject) {
+			originalExtents = worldObject.GetSelectionBounds().extents;	
+		}
+		else {
+			originalExtents = new Vector3(0.0f, 0.0f, 0.0f);
+		}
+		
+		normalExtents = originalExtents;
+		
+		normalExtents.Normalize();
+		numberOfExtents = originalExtents.x / normalExtents.x;
+		int targetShift = Mathf.FloorToInt(numberOfExtents);
+		
+		int shiftAmount = targetShift + unitShift;
+		
+		Vector3 origin = transform.position;
+		Vector3 direction = new Vector3(destination.x - origin.x, 0.0f, destination.z - origin.z);
+		
+		direction.Normalize();
+		
+		for(int i = 0; i < shiftAmount; i++){
+			destination -= direction;	
+		}
+		
+		destination.y = destinationTarget.transform.position.y;
 	}
 }

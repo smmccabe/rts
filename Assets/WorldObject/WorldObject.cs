@@ -13,6 +13,8 @@ public class WorldObject : MonoBehaviour {
 	protected Bounds selectionBounds;
 	protected Rect playingArea = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
 	
+	public Bounds GetSelectionBounds() { return selectionBounds; }
+	
 	protected virtual void Awake() {
 		selectionBounds = ResourceManager.InvalidBounds;
 		CalculateBounds();
