@@ -13,6 +13,8 @@ public class HUD : MonoBehaviour {
 	public Texture2D rallyPointCursor;
 	public Texture2D[] resources;
 	public Texture2D smallButtonHover, smallButtonClick;
+	public Texture2D healthy, damaged, critical;
+	public Texture2D[] resourceHealthBars;
 	
 	private Player player;
 	private CursorState activeCursorState;
@@ -34,7 +36,7 @@ public class HUD : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		player = transform.parent.GetComponent<Player>();
-		ResourceManager.StoreSelectBoxItems(selectBoxSkin);
+		ResourceManager.StoreSelectBoxItems(selectBoxSkin, healthy, damaged, critical);
 		SetCursorState(CursorState.Select);
 		
 		resourceValues = new Dictionary<ResourceType, int>();
@@ -58,6 +60,20 @@ public class HUD : MonoBehaviour {
 		}
 		
 		buildAreaHeight = Screen.height - RESOURCE_BAR_HEIGHT - SELECTION_NAME_HEIGHT - 2 * BUTTON_SPACING;
+		
+		Dictionary<ResourceType, Texture2D> resourceHealthBarTextures = new Dictionary<ResourceType, Texture2D>();
+		
+		for(int i = 0; i < resourceHealthBars.Length; i++){
+			switch(resourceHealthBars[i].name){
+			case "ore":
+				resourceHealthBarTextures.Add (ResourceType.Ore, resourceHealthBars[i]);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		ResourceManager.SetResourceHealthBarTextures(resourceHealthBarTextures);
 	}
 	
 	// Update is called once per frame

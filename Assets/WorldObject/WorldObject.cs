@@ -12,6 +12,8 @@ public class WorldObject : MonoBehaviour {
 	protected bool currentlySelected = false;
 	protected Bounds selectionBounds;
 	protected Rect playingArea = new Rect(0.0f, 0.0f, 0.0f, 0.0f);
+	protected GUIStyle healthStyle = new GUIStyle();
+	protected float healthPercentage = 1.0f;
 	
 	public Bounds GetSelectionBounds() { return selectionBounds; }
 	
@@ -35,7 +37,9 @@ public class WorldObject : MonoBehaviour {
 	}
 	
 	protected virtual void DrawSelectionBox(Rect selectBox){
-		GUI.Box (selectBox, "");	
+		GUI.Box (selectBox, "");
+		CalculateCurrentHealth();
+		GUI.Label (new Rect(selectBox.x, selectBox.y - 7, selectBox.width * healthPercentage, 5), "", healthStyle);
 	}
 	
 	public virtual void SetSelection(bool selected, Rect playingArea) {
@@ -107,5 +111,19 @@ public class WorldObject : MonoBehaviour {
 			return true;
 		}
 		return false;
+	}
+	
+	protected virtual void CalculateCurrentHealth() {
+		healthPercentage = (float)hitPoints / (float)maxHitPoints;
+		
+		if(healthPercentage > 0.65f) {
+			healthStyle.normal.background = ResourceManager.HealthyTexture;
+		}
+		else if(healthPercentage > 0.35f) {
+			healthStyle.normal.background = ResourceManager.DamagedTexture;
+		}
+		else {
+			healthStyle.normal.background = ResourceManager.CriticalTexture;	
+		}
 	}
 }

@@ -9,7 +9,7 @@ public class Harvester : Unit {
 	public float collectionAmount, depositAmount;
 	
 	private bool harvesting = false, emptying = false;
-	private float currentLoad = 0.0f;
+	public float currentLoad = 0.0f;
 	private ResourceType harvestType;
 	private Resource resourceDeposit;
 	private float currentDeposit = 0.0f;
