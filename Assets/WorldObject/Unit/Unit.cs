@@ -42,7 +42,7 @@ public class Unit : WorldObject {
 		base.SetHoverState(hoverObject);
 		
 		if(player && player.human && currentlySelected) {
-			if(hoverObject.name == "Ground") {
+			if(hoverObject.tag == "Terrain") {
 				player.hud.SetCursorState(CursorState.Move);
 			}
 		}
@@ -52,9 +52,9 @@ public class Unit : WorldObject {
 		base.ActionClick (hitObject, hitPoint, controller);
 		
 		if(player && player.human && currentlySelected) {
-			if(hitObject.name == "Ground" && hitPoint != ResourceManager.InvalidPosition) {
+			if(hitObject.tag == "Terrain" && hitPoint != ResourceManager.InvalidPosition) {
 				float x = hitPoint.x;
-				float y = hitPoint.y + player.SelectedObject.transform.position.y;
+				float y = hitPoint.y; // + player.SelectedObject.transform.position.y;
 				float z = hitPoint.z;
 				
 				Vector3 destination = new Vector3(x, y, z);
@@ -130,7 +130,7 @@ public class Unit : WorldObject {
 		int shiftAmount = targetShift + unitShift;
 		
 		Vector3 origin = transform.position;
-		Vector3 direction = new Vector3(destination.x - origin.x, 0.0f, destination.z - origin.z);
+		Vector3 direction = new Vector3(destination.x - origin.x, destination.y - origin.y, destination.z - origin.z);
 		
 		direction.Normalize();
 		
@@ -138,6 +138,6 @@ public class Unit : WorldObject {
 			destination -= direction;	
 		}
 		
-		destination.y = destinationTarget.transform.position.y;
+		//destination.y = destinationTarget.transform.position.y;
 	}
 }

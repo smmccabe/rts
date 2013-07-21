@@ -61,7 +61,7 @@ public class Harvester : Unit {
 		base.SetHoverState (hoverObject);
 		
 		if(player && player.human && currentlySelected){
-			if(hoverObject.name != "Ground"){
+			if(hoverObject.tag != "Terrain"){
 				Resource resource = hoverObject.transform.parent.GetComponent<Resource>();
 				
 				if(resource && !resource.isEmpty()){
@@ -75,7 +75,7 @@ public class Harvester : Unit {
 		base.ActionClick(hitObject, hitPoint, controller);
 		
 		if(player && player.human){
-			if(hitObject.name != "Ground"){
+			if(hitObject.tag != "Terrain"){
 				Resource resource = hitObject.transform.parent.GetComponent<Resource>();
 				
 				if(resource && !resource.isEmpty()){

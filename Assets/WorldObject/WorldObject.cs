@@ -65,7 +65,7 @@ public class WorldObject : MonoBehaviour {
 	}
 	
 	public virtual void SelectClick(GameObject hitObject, Vector3 hitPoint, Player controller) {
-		if(currentlySelected && hitObject && hitObject.name != "Ground") {
+		if(currentlySelected && hitObject && hitObject.tag != "Terrain") {
 			WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject>();
 			
 			if(worldObject){
@@ -80,7 +80,7 @@ public class WorldObject : MonoBehaviour {
 	
 	public virtual void SetHoverState(GameObject hoverObject){
 		if(player && player.human && currentlySelected) {
-			if(hoverObject.name != "Ground") {
+			if(hoverObject.tag != "Terrain") {
 				player.hud.SetCursorState(CursorState.Select);
 			}
 		}

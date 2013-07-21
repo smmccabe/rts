@@ -103,7 +103,7 @@ public class UserInput : MonoBehaviour {
 			GameObject hitObject = FindHitObject();
 			Vector3 hitPoint = FindHitPoint();
 			if(hitObject && hitPoint != ResourceManager.InvalidPosition){
-				if(hitObject.name != "Ground"){
+				if(hitObject.tag != "Terrain"){
 					WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject>();
 					if(worldObject){
 						//deselect current object if already selected
@@ -141,7 +141,7 @@ public class UserInput : MonoBehaviour {
 				if(player.SelectedObject){
 					player.SelectedObject.SetHoverState(hoverObject);
 				}
-				else if(hoverObject.name != "Ground"){
+				else if(hoverObject.tag != "Terrain"){
 					Player owner = hoverObject.transform.root.GetComponent<Player>();
 					if(owner){
 						Unit unit = hoverObject.transform.parent.GetComponent<Unit>();

@@ -100,7 +100,7 @@ public class Building : WorldObject {
 		base.SetHoverState(hoverObject);
 		
 		if(player && player.human && currentlySelected){
-			if(hoverObject.name == "Ground"){
+			if(hoverObject.tag == "Terrain"){
 				if(player.hud.GetPreviousCursorState() == CursorState.RallyPoint) {
 					player.hud.SetCursorState(CursorState.RallyPoint);
 				}
@@ -112,7 +112,7 @@ public class Building : WorldObject {
 		base.ActionClick(hitObject, hitPoint, controller);
 		
 		if(player && player.human && currentlySelected) {
-			if(hitObject.name == "Ground"){
+			if(hitObject.tag == "Terrain"){
 				//any right click on the ground sets rally point
 				//if((player.hud.GetPreviousCursorState () == CursorState.RallyPoint || player.hud.GetPreviousCursorState() == CursorState.RallyPoint) && hitPoint	!= ResourceManager.InvalidPosition) {
 					SetRallyPoint(hitPoint);	
