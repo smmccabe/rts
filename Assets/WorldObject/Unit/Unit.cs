@@ -6,6 +6,7 @@ public class Unit : WorldObject {
 	public float moveSpeed, rotateSpeed;
 	
 	protected bool moving, rotating;
+	protected int idle = 0;
 	
 	private Vector3 destination;
 	private Quaternion targetRotation;
@@ -27,6 +28,9 @@ public class Unit : WorldObject {
 		}
 		else if(moving) {
 			MakeMove();	
+		}
+		else{
+			idle++;	
 		}
     }
  
@@ -91,8 +95,6 @@ public class Unit : WorldObject {
 			}
 		}
 		CalculateBounds();
-		
-		Debug.Log ("Turning Destination: " + destination);
 	}
 	
 	private void MakeMove() {
@@ -105,6 +107,21 @@ public class Unit : WorldObject {
 	}
 	
 	private void CalculateTargetDestination() {
+		int shiftAmount = CalculateShiftAmount(destinationTarget);
+		
+		Vector3 origin = transform.position;
+		Vector3 direction = new Vector3(destination.x - origin.x, destination.y - origin.y, destination.z - origin.z);
+		
+		direction.Normalize();
+		
+		for(int i = 0; i < shiftAmount; i++){
+			destination -= direction;	
+		}
+		
+		//destination.y = destinationTarget.transform.position.y;
+	}
+	
+	protected int CalculateShiftAmount(GameObject target){
 		Vector3 originalExtents = selectionBounds.extents;
 		Vector3 normalExtents = originalExtents;
 		normalExtents.Normalize();
@@ -112,7 +129,7 @@ public class Unit : WorldObject {
 		float numberOfExtents = originalExtents.x / normalExtents.x;
 		int unitShift = Mathf.FloorToInt(numberOfExtents);
 		
-		WorldObject worldObject = destinationTarget.GetComponent<WorldObject>();
+		WorldObject worldObject = target.GetComponent<WorldObject>();
 		
 		if(worldObject) {
 			originalExtents = worldObject.GetSelectionBounds().extents;	
@@ -127,17 +144,6 @@ public class Unit : WorldObject {
 		numberOfExtents = originalExtents.x / normalExtents.x;
 		int targetShift = Mathf.FloorToInt(numberOfExtents);
 		
-		int shiftAmount = targetShift + unitShift;
-		
-		Vector3 origin = transform.position;
-		Vector3 direction = new Vector3(destination.x - origin.x, destination.y - origin.y, destination.z - origin.z);
-		
-		direction.Normalize();
-		
-		for(int i = 0; i < shiftAmount; i++){
-			destination -= direction;	
-		}
-		
-		//destination.y = destinationTarget.transform.position.y;
+		return targetShift + unitShift;
 	}
 }

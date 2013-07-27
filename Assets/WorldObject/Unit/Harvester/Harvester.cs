@@ -27,26 +27,57 @@ public class Harvester : Unit {
 			if(harvesting || emptying){
 				//play animation here
 				if(harvesting){
-					Collect();
-					if(currentLoad >= capacity || resourceDeposit.isEmpty()) {
-						currentLoad = Mathf.Floor(currentLoad);
-						harvesting = false;
-						emptying = true;
-						//stop harvest animation here
-						StartMove(resourceStore.transform.position, resourceStore.gameObject);						
-					}
-				}
-				else{
-					Deposit ();
-					if(currentLoad <= 0){
-						emptying = false;
+					if(resourceDeposit){
+						int distance = Mathf.FloorToInt(Vector3.Distance(transform.position, resourceDeposit.transform.position));
+						int acceptableDistance = Mathf.CeilToInt(CalculateShiftAmount(resourceDeposit.gameObject));
 						
-						if(!resourceDeposit.isEmpty ()){
-							harvesting = true;
+						if(distance <= acceptableDistance){
+							Collect();
+							if(currentLoad >= capacity || resourceDeposit.isEmpty()) {
+								currentLoad = Mathf.Floor(currentLoad);
+								harvesting = false;
+								emptying = true;
+								//stop harvest animation here
+								
+								calculateResourceStore();
+								
+								if(resourceStore){
+									StartMove(resourceStore.transform.position, resourceStore.gameObject);
+								}
+							}
+						}
+						else{
 							StartMove (resourceDeposit.transform.position, resourceDeposit.gameObject);
 						}
 					}
 				}
+				else{
+					if(!resourceStore){
+						calculateResourceStore();	
+					}
+					
+					if(resourceStore){
+						int distance = Mathf.FloorToInt(Vector3.Distance(transform.position, resourceStore.transform.position));
+						int acceptableDistance = Mathf.CeilToInt(CalculateShiftAmount(resourceStore.gameObject));
+						
+						if(distance <= acceptableDistance){
+							Deposit ();
+							if(currentLoad <= 0){
+								emptying = false;
+								
+								if(!resourceDeposit.isEmpty ()){
+									harvesting = true;
+									StartMove (resourceDeposit.transform.position, resourceDeposit.gameObject);
+								}
+							}
+						}
+						else{
+							StartMove(resourceStore.transform.position, resourceStore.gameObject);
+						}
+					}
+				}
+				//did something, set idle to 0
+				idle = 0;
 			}
 		}
 	}
@@ -69,6 +100,24 @@ public class Harvester : Unit {
 				}
 			}
 		}
+	}
+	
+	private void calculateResourceStore() {
+		Building[] buildings = player.GetComponentInChildren<Buildings>().GetComponentsInChildren<Building>();
+						
+		resourceStore = null;
+		float currentDistance = -1;
+		float distance;
+		foreach(Building building in buildings){
+			//change to some sort of tag later maybe?
+			if(building.objectName == "Refinery" && !building.UnderConstruction()){
+				distance = Vector3.Distance (transform.position, building.transform.position);
+				if(distance < currentDistance || currentDistance == -1){
+					currentDistance = distance;
+					resourceStore = building;
+				}
+			}
+		}	
 	}
 	
 	public override void ActionClick(GameObject hitObject, Vector3 hitPoint, Player controller){
@@ -103,7 +152,8 @@ public class Harvester : Unit {
 	}
 	
 	private void StopHarvest(){
-		
+		harvesting = false;
+		emptying = false;
 	}
 	
 	private void Collect() {
