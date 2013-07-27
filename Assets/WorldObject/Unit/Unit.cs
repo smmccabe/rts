@@ -34,7 +34,7 @@ public class Unit : WorldObject {
         base.OnGUI();
     }
 	
-	public virtual void Init(Building creator){
+	public virtual void SetBuilding(Building creator){
 		//unit initialization stuff
 	}
 	
@@ -63,7 +63,7 @@ public class Unit : WorldObject {
 		}
 	}
 	
-	public void StartMove(Vector3 destination) {
+	public virtual void StartMove(Vector3 destination) {
 		this.destinationTarget = null;
 		
 		this.destination = destination;

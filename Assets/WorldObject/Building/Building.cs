@@ -5,22 +5,21 @@ using RTS;
 
 public class Building : WorldObject {
 	public float maxBuildProgress;
-	protected Queue<string> buildQueue;
-	private float currentBuildProgress = 0.0f;
-	private Vector3 spawnPoint;
-	protected Vector3 rallyPoint;
 	public Texture2D rallyPointImage;
 	public Texture2D sellImage;
+	
+	protected Queue<string> buildQueue;
+	protected Vector3 rallyPoint;
+	
+	private float currentBuildProgress = 0.0f;
+	private Vector3 spawnPoint;
+	private bool needsBuilding = false;
 	
 	protected override void Awake() {
 	    base.Awake();
 		
 		buildQueue = new Queue<string>();
-		float spawnX = selectionBounds.center.x + transform.forward.x * selectionBounds.extents.x + transform.forward.x * 10;
-		float spawnZ = selectionBounds.center.z + transform.forward.z * selectionBounds.extents.z + transform.forward.z * 10;
-		spawnPoint = new Vector3(spawnX, 0.0f, spawnZ);
-		
-		rallyPoint = spawnPoint;
+		SetSpawnPoint();
 	}
 	 
 	protected override void Start () {
@@ -35,6 +34,10 @@ public class Building : WorldObject {
 	 
 	protected override void OnGUI() {
 	    base.OnGUI();
+		
+		if(needsBuilding){
+			DrawBuildProgress();	
+		}
 	}
 	
 	public override void PerformAction(string actionToPerform){
@@ -111,12 +114,9 @@ public class Building : WorldObject {
 	public override void ActionClick(GameObject hitObject, Vector3 hitPoint, Player controller) {
 		base.ActionClick(hitObject, hitPoint, controller);
 		
-		if(player && player.human && currentlySelected) {
+		if(player && player.human && currentlySelected && hitPoint != ResourceManager.InvalidPosition) {
 			if(hitObject.tag == "Terrain"){
-				//any right click on the ground sets rally point
-				//if((player.hud.GetPreviousCursorState () == CursorState.RallyPoint || player.hud.GetPreviousCursorState() == CursorState.RallyPoint) && hitPoint	!= ResourceManager.InvalidPosition) {
-					SetRallyPoint(hitPoint);	
-				//}
+				SetRallyPoint(hitPoint);	
 			}
 		}
 	}
@@ -140,5 +140,43 @@ public class Building : WorldObject {
 			SetSelection(false, playingArea);	
 		}
 		Destroy(this.gameObject);
+	}
+	
+	public void StartConstruction() {
+		CalculateBounds();
+		SetSpawnPoint();
+		needsBuilding = true;
+		hitPoints = 0;
+	}
+	
+	private void DrawBuildProgress() {
+		GUI.skin = ResourceManager.SelectBoxSkin;
+		Rect selectBox = WorkManager.CalculateSelectionBox(selectionBounds, playingArea);
+		
+		GUI.BeginGroup(playingArea);
+		CalculateCurrentHealth(0.5f, 0.99f);
+		DrawHealthBar(selectBox, "Building...");
+		GUI.EndGroup();
+	}
+	
+	private void SetSpawnPoint() {
+		float spawnX = selectionBounds.center.x + transform.forward.x * selectionBounds.extents.x + transform.forward.x * 10;
+		float spawnZ = selectionBounds.center.z + transform.forward.z * selectionBounds.extents.z + transform.forward.z * 10;
+		spawnPoint = new Vector3(spawnX, 0.0f, spawnZ);
+		
+		rallyPoint = spawnPoint;	
+	}
+	
+	public bool UnderConstruction() {
+		return needsBuilding;	
+	}
+	
+	public void Construct(int amount) {
+		hitPoints += amount;
+		if(hitPoints >= maxHitPoints) {
+			hitPoints = maxHitPoints;
+			needsBuilding = false;
+			RestoreMaterials();
+		}
 	}
 }
