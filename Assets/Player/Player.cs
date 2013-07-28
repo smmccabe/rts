@@ -84,6 +84,8 @@ public class Player : MonoBehaviour {
 			if(spawnPoint != rallyPoint){
 				unitObject.StartMove(rallyPoint);
 			}
+			
+			AddResource(ResourceType.Money, -unitObject.cost);
 		}
 		
 		
@@ -163,6 +165,7 @@ public class Player : MonoBehaviour {
 		tempBuilding.SetColliders(true);
 		tempCreator.SetBuilding(tempBuilding);
 		tempBuilding.StartConstruction();
+		AddResource(ResourceType.Money, -tempBuilding.cost);
 	}
 	
 	public void CancelBuildingPlacement() {
