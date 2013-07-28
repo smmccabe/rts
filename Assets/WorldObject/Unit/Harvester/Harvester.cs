@@ -5,7 +5,7 @@ using RTS;
 public class Harvester : Unit {
 	
 	public float capacity;
-	public Building resourceStore;
+	public Depot resourceStore;
 	public float collectionAmount, depositAmount;
 	
 	private bool harvesting = false, emptying = false;
@@ -82,12 +82,6 @@ public class Harvester : Unit {
 		}
 	}
 	
-	public override void SetBuilding (Building creator){
-		base.SetBuilding(creator);
-		
-		resourceStore = creator;
-	}
-	
 	public override void SetHoverState(GameObject hoverObject){
 		base.SetHoverState (hoverObject);
 		
@@ -103,12 +97,12 @@ public class Harvester : Unit {
 	}
 	
 	private void calculateResourceStore() {
-		Building[] buildings = player.GetComponentInChildren<Buildings>().GetComponentsInChildren<Building>();
+		Building[] buildings = player.GetComponentInChildren<Buildings>().GetComponentsInChildren<Depot>();
 						
 		resourceStore = null;
 		float currentDistance = -1;
 		float distance;
-		foreach(Building building in buildings){
+		foreach(Depot building in buildings){
 			//change to some sort of tag later maybe?
 			if(building.objectName == "Refinery" && !building.UnderConstruction()){
 				distance = Vector3.Distance (transform.position, building.transform.position);
@@ -176,11 +170,8 @@ public class Harvester : Unit {
 			}
 			currentDeposit -= deposit;
 			currentLoad -= deposit;
-			ResourceType depositType = harvestType;
-			if(harvestType == ResourceType.Ore) {
-				depositType = ResourceType.Money;
-			}
-			player.AddResource(depositType, deposit);
+
+			resourceStore.Deposit(harvestType, deposit);
 		}
 	}
 	

@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
-public class Refinery : Depot {
+public class DropPod : Building {
 
 	protected override void Start() {
 		base.Start ();
 		
-		actions = new string[] { "Harvester" };
+		actions = new string[] { "Worker", "Transport" };
 	}
 }
