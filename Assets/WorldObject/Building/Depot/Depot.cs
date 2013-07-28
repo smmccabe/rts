@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using RTS;
@@ -36,5 +37,48 @@ public class Depot : Building {
 		}
 		
 		return overflow;
+	}
+	
+	public int Amount() {
+		int amount = 0;
+		
+		foreach(KeyValuePair<ResourceType, int> resource in resources){
+			amount += resource.Value;	
+		}
+		
+		return amount;
+	}
+	
+	public int Load(int requestAmount, ResourceType type) {
+		int amount;
+		
+		if(resources[type] >= requestAmount){
+			amount = requestAmount;
+			resources[type] -= requestAmount;
+		}
+		else {
+			amount = resources[type];
+			resources[type] = 0;
+		}
+		
+		return amount;
+	}
+	
+	public ResourceType LoadPriority(){
+		float percentageFull = -1;
+		float tempPercentage = 0;
+		
+		//not sure what this should be, should sort of be a null?
+		ResourceType type = ResourceType.Money;
+		
+		foreach(KeyValuePair<ResourceType, int> resource in resources){
+			tempPercentage = resource.Value / resourceLimits[resource.Key];
+			if(tempPercentage > percentageFull){
+				percentageFull = tempPercentage;
+				type = resource.Key;	
+			}
+		}	
+		
+		return type;
 	}
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class DropPod : Building {
+public class SpaceElevator : Building {
 
 	protected override void Start() {
 		base.Start ();

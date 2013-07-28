@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RTS {
 	public static class ResourceManager {
-		public static float ScrollSpeed { get { return 50; } }
+		public static float ScrollSpeed { get { return 150; } }
 		public static int ScrollWidth { get { return 15; } }
 		
 		public static float RotateSpeed { get { return 100; } }

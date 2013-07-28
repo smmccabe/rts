@@ -146,4 +146,14 @@ public class Unit : WorldObject {
 		
 		return targetShift + unitShift;
 	}
+	
+	protected bool AdjacentTo(GameObject gameObject) {
+		int distance = Mathf.FloorToInt(Vector3.Distance(transform.position, gameObject.transform.position));
+		int acceptableDistance = Mathf.CeilToInt(CalculateShiftAmount(gameObject));
+		
+		if(distance <= acceptableDistance){
+			return true;	
+		}
+		return false;
+	}
 }
