@@ -17,6 +17,7 @@ public class UserInput : MonoBehaviour {
 			RotateCamera();
 			
 			MouseActivity();
+			KeyboardActivity();
 		}
 	}
 	
@@ -26,7 +27,7 @@ public class UserInput : MonoBehaviour {
 		Vector3 movement = new Vector3(0, 0, 0);
 		bool mouseScroll = false;
 		
-		if(xpos <= 0 && xpos < ResourceManager.ScrollWidth) {
+		if(xpos >= 0 && xpos < ResourceManager.ScrollWidth) {
 		    movement.x -= ResourceManager.ScrollSpeed;
 		    player.hud.SetCursorState(CursorState.PanLeft);
 		    mouseScroll = true;
@@ -169,6 +170,40 @@ public class UserInput : MonoBehaviour {
 					}
 				}
 			}
+		}
+	}
+	
+	private void KeyboardActivity() {
+		KeyboardMove();
+	}
+	
+	private void KeyboardMove() {
+		Vector3 movement = new Vector3(0, 0, 0);
+		
+		if(Input.GetKey(KeyCode.UpArrow)){			
+			movement.z += ResourceManager.ScrollSpeed;
+		}
+		if(Input.GetKey (KeyCode.DownArrow)){
+			movement.z -= ResourceManager.ScrollSpeed;
+		}
+		if(Input.GetKey(KeyCode.LeftArrow)){			
+			movement.x -= ResourceManager.ScrollSpeed;
+		}
+		if(Input.GetKey (KeyCode.RightArrow)){
+			movement.x += ResourceManager.ScrollSpeed;
+		}
+		
+		movement = Camera.mainCamera.transform.TransformDirection(movement);
+		movement.y = 0;
+			
+		Vector3 origin = Camera.mainCamera.transform.position;
+		Vector3 destination = origin;
+		destination.x += movement.x;
+		destination.y += movement.y;
+		destination.z += movement.z;
+			
+		if(destination != origin){
+			Camera.mainCamera.transform.position = Vector3.MoveTowards(origin, destination, Time.deltaTime * ResourceManager.ScrollSpeed);
 		}
 	}
 }
