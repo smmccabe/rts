@@ -21,6 +21,17 @@ public class Depot : Building {
 		InitResource(ResourceType.Ore);
 	}
 	
+	protected override int DrawSelectionInfoBox() {
+		int offset = base.DrawSelectionInfoBox();
+		
+		foreach(KeyValuePair<ResourceType, int> resource in resources){
+			GUI.Label(new Rect(0, offset, 150, 20), resource.Key + ": " + resource.Value + "/" + resourceLimits[resource.Key]);
+			offset += 20;
+		}
+		
+		return offset;
+	}
+	
 	protected void InitResource(ResourceType type) {
 		resources.Add(type, 0);
 		resourceLimits.Add (type, RESOURCE_LIMIT);
