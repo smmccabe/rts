@@ -86,7 +86,7 @@ public class WorldObject : MonoBehaviour {
 	
 	protected virtual int DrawSelectionInfoBox() {
 		int offset = 0;
-		Debug.Log("DrawSelectionInfo" + offset);
+
 		if(!objectName.Equals("")) {
 			GUI.Label(new Rect(0, 0, 150, 20), objectName);
 			offset += 20;

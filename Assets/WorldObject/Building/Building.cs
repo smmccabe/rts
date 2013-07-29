@@ -46,7 +46,15 @@ public class Building : WorldObject {
 	}
 	
 	protected void CreateUnit(string unitName) {
-		buildQueue.Enqueue(unitName);	
+		buildQueue.Enqueue(unitName);
+		
+		//have to create a unit just to get price? not sure this is the best way
+		//this seems super duper hacky
+		GameObject newObject = (GameObject)Instantiate(ResourceManager.GetUnit(unitName), spawnPoint, transform.rotation);
+		Unit newUnit = newObject.GetComponent<Unit>();
+		player.AddResource(ResourceType.Money, -newUnit.cost);
+		Destroy(newUnit);
+		Destroy(newObject);
 	}
 	
 	protected void ProcessBuildQueue() {

@@ -84,11 +84,7 @@ public class Player : MonoBehaviour {
 			if(spawnPoint != rallyPoint){
 				unitObject.StartMove(rallyPoint);
 			}
-			
-			AddResource(ResourceType.Money, -unitObject.cost);
 		}
-		
-		
 	}
 	
 	public void CreateBuilding(string buildingName, Vector3 buildPoint, Unit creator, Rect playingArea) {
