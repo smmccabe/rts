@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using RTS;
 
 public class Depot : Building {
-	private Dictionary<ResourceType, int> resources, resourceLimits;
-	private const int RESOURCE_LIMIT = 1000;
+	public Dictionary<ResourceType, int> resources, resourceLimits;
+	public const int RESOURCE_LIMIT = 100000;
 	
 	protected override void Awake() {
 		base.Awake();
@@ -80,5 +80,14 @@ public class Depot : Building {
 		}	
 		
 		return type;
+	}
+	
+	public bool IsFull(ResourceType type) {
+		if(resources[type] >= resourceLimits[type]){
+			return true;	
+		}
+		else{
+			return false;	
+		}
 	}
 }

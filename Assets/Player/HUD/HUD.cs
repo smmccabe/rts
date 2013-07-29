@@ -88,18 +88,9 @@ public class HUD : MonoBehaviour {
 	private void DrawOrdersBar() {
 		GUI.skin = ordersSkin;
 		GUI.BeginGroup(new Rect(Screen.width - ORDERS_BAR_WIDTH - BUILD_IMAGE_WIDTH, RESOURCE_BAR_HEIGHT, ORDERS_BAR_WIDTH + BUILD_IMAGE_WIDTH, Screen.height - RESOURCE_BAR_HEIGHT));
-		GUI.Box(new Rect(BUILD_IMAGE_WIDTH + SCROLL_BAR_WIDTH, 0, ORDERS_BAR_WIDTH, Screen.height - RESOURCE_BAR_HEIGHT), "");
+		GUI.Box(new Rect(BUILD_IMAGE_WIDTH, 0, ORDERS_BAR_WIDTH, Screen.height - RESOURCE_BAR_HEIGHT), "");
 		
-		string selectionName = "";
 		if(player.SelectedObject){
-			selectionName = player.SelectedObject.objectName;
-		
-			if(!selectionName.Equals("")) {
-				int leftPos = BUILD_IMAGE_WIDTH + SCROLL_BAR_WIDTH / 2;
-				int topPos = buildAreaHeight + BUTTON_SPACING;
-				GUI.Label(new Rect(leftPos, topPos, ORDERS_BAR_WIDTH, SELECTION_NAME_HEIGHT), selectionName);	
-			}
-			
 			if(player.SelectedObject.IsOwnedBy(player)) {
 				if(lastSelection && lastSelection != player.SelectedObject) {
 					sliderValue = 0.0f;
@@ -269,10 +260,6 @@ public class HUD : MonoBehaviour {
 		
 		GUI.BeginGroup (new Rect(BUILD_IMAGE_WIDTH, 0, ORDERS_BAR_WIDTH, buildAreaHeight));
 		
-		if(numActions <= MaxNumRows(buildAreaHeight)) {
-			DrawSlider(buildAreaHeight, numActions / 2.0f);
-		}
-		
 		for(int i = 0; i < numActions; i++) {
 			int column = i % 2;
 			int row = i / 2;
@@ -298,14 +285,6 @@ public class HUD : MonoBehaviour {
 		float top = row * BUILD_IMAGE_HEIGHT - sliderValue * BUILD_IMAGE_HEIGHT;
 		
 		return new Rect(left, top, BUILD_IMAGE_WIDTH, BUILD_IMAGE_HEIGHT);
-	}
-	
-	private void DrawSlider(int groupHeight, float numRows) {
-		sliderValue = GUI.VerticalSlider(GetScrollPos(groupHeight), sliderValue, 0.0f, numRows - MaxNumRows(groupHeight));
-	}
-	
-	private Rect GetScrollPos(int groupHeight) {
-		return new Rect(BUTTON_SPACING, BUTTON_SPACING, SCROLL_BAR_WIDTH, groupHeight - 2 * BUTTON_SPACING);
 	}
 	
 	private void DrawBuildQueue(string[] buildQueue, float buildPercentage){

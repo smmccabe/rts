@@ -36,7 +36,17 @@ public class WorldObject : MonoBehaviour {
 	protected virtual void OnGUI() {
 		if(currentlySelected){
 			DrawSelection();
+			DrawSelectionInfo();
 		}
+	}
+	
+	private void DrawSelection() {
+		GUI.skin = ResourceManager.SelectBoxSkin;
+		Rect selectBox = WorkManager.CalculateSelectionBox(selectionBounds, playingArea);
+		
+		GUI.BeginGroup(playingArea);
+		DrawSelectionBox(selectBox);
+		GUI.EndGroup();
 	}
 	
 	protected virtual void DrawSelectionBox(Rect selectBox){
@@ -64,6 +74,18 @@ public class WorldObject : MonoBehaviour {
 		healthStyle.padding.top = -20;
 		healthStyle.fontStyle = FontStyle.Bold;
 		GUI.Label(new Rect(selectBox.x, selectBox.y - 7, selectBox.width * healthPercentage, 5), label, healthStyle);
+	}
+	
+	private void DrawSelectionInfo(){
+		GUI.BeginGroup(new Rect(Screen.width - 140, Screen.height - 150, 130, 140));
+		DrawSelectionInfoBox();
+		GUI.EndGroup();	
+	}
+	
+	protected virtual void DrawSelectionInfoBox() {
+		if(!objectName.Equals("")) {
+			GUI.Label(new Rect(0, 0, 150, 20), objectName);
+		}
 	}
 	
 	public virtual void SetSelection(bool selected, Rect playingArea) {
@@ -119,15 +141,6 @@ public class WorldObject : MonoBehaviour {
 		
 		controller.SelectedObject = worldObject;
 		worldObject.SetSelection(true, playingArea);
-	}
-	
-	private void DrawSelection() {
-		GUI.skin = ResourceManager.SelectBoxSkin;
-		Rect selectBox = WorkManager.CalculateSelectionBox(selectionBounds, playingArea);
-		
-		GUI.BeginGroup(playingArea);
-		DrawSelectionBox(selectBox);
-		GUI.EndGroup();
 	}
 	
 	public bool IsOwnedBy(Player owner) {

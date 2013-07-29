@@ -27,9 +27,7 @@ public class Transport : Unit {
 				//did something, set idle to 0
 				idle = 0;
 			}
-			else{
-				Debug.Log("looking for depot");
-				
+			else{				
 				Depot[] depots = player.GetComponentInChildren<Buildings>().GetComponentsInChildren<Depot>();
 				int depotAmount = 0;
 				int tempAmount;
@@ -42,7 +40,7 @@ public class Transport : Unit {
 						tempAmount = depot.Amount();
 						if(tempAmount > depotAmount){
 							//make sure we have somewhere to take the cargo
-							tempToDepot = CalculateToDepot(depot);
+							tempToDepot = CalculateToDepot(depot, depot.LoadPriority());
 							if(tempToDepot){
 								depotAmount = tempAmount;
 								fromDepot = depot;
@@ -58,6 +56,15 @@ public class Transport : Unit {
 					StartMove (fromDepot.transform.position, fromDepot.gameObject);
 				}
 			}
+		}
+	}
+	
+	public override void ActionClick(GameObject hitObject, Vector3 hitPoint, Player controller){
+		base.ActionClick(hitObject, hitPoint, controller);
+		
+		if(player && player.human){
+			loading = false;
+			emptying = false;
 		}
 	}
 	
@@ -87,9 +94,7 @@ public class Transport : Unit {
 						emptying = true;
 						
 						StartMove(toDepot.transform.position, toDepot.gameObject);
-					}
-					
-					Debug.Log("CurrentLoad: " + currentLoad);
+					}		
 				}
 			}
 			else{
@@ -105,15 +110,15 @@ public class Transport : Unit {
 		
 		if(toDepot){
 			if(AdjacentTo (toDepot.gameObject)){
-				Debug.Log("close enough to dropoff point");
 				int overflow = toDepot.Deposit(loadType, depositAmount);
 				currentLoad -= depositAmount - overflow;
 				
 				if(overflow > 0){
-					Debug.Log("overflow?");
 					//we can't unload, should we wait or go somewhere else? 
 					//If we go somewhere else, should we load up back to full for efficiency?
 					//would just discarding the rest be more efficient?
+					//for now we just find a different depot
+					SetToDepot();
 				}
 				
 				if(currentLoad <= 0){
@@ -129,10 +134,10 @@ public class Transport : Unit {
 	}
 	
 	private void SetToDepot() {
-		toDepot = CalculateToDepot (fromDepot);	
+		toDepot = CalculateToDepot (fromDepot, loadType);	
 	}
 	
-	private Depot CalculateToDepot(Depot calculateFromDepot) {
+	private Depot CalculateToDepot(Depot calculateFromDepot, ResourceType type) {
 		Depot returnToDepot = null;
 		
 		//find closest elevator
@@ -158,7 +163,7 @@ public class Transport : Unit {
 			foreach(Depot depot in depots){
 				if(depot != fromDepot){
 					//change to some sort of tag later maybe?
-					if(!depot.UnderConstruction()){
+					if(!depot.UnderConstruction() && !depot.IsFull(type)){
 						tempDistance = Mathf.FloorToInt(Vector3.Distance(calculateFromDepot.transform.position, depot.transform.position));
 						
 						//don't transport farther away from an elevator
