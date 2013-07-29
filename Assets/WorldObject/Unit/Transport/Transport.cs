@@ -68,6 +68,15 @@ public class Transport : Unit {
 		}
 	}
 	
+	protected override int DrawSelectionInfoBox() {
+		int offset = base.DrawSelectionInfoBox();
+		
+		GUI.Label(new Rect(0, offset, 150, 20), currentLoad + "/" + capacity + " " + loadType);
+		offset += 20;
+		
+		return offset;
+	}
+	
 	private void Load() {
 		if(fromDepot){
 			int distance = Mathf.FloorToInt(Vector3.Distance(transform.position, fromDepot.transform.position));

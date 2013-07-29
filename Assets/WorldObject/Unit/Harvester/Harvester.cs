@@ -96,6 +96,32 @@ public class Harvester : Unit {
 		}
 	}
 	
+	public override void ActionClick(GameObject hitObject, Vector3 hitPoint, Player controller){
+		base.ActionClick(hitObject, hitPoint, controller);
+		
+		if(player && player.human){
+			if(hitObject.tag != "Terrain"){
+				Resource resource = hitObject.transform.parent.GetComponent<Resource>();
+				
+				if(resource && !resource.isEmpty()){
+					StartHarvest(resource);
+				}
+			}
+			else {
+				StopHarvest();	
+			}
+		}
+	}
+	
+	protected override int DrawSelectionInfoBox() {
+		int offset = base.DrawSelectionInfoBox();
+		
+		GUI.Label(new Rect(0, offset, 150, 20), currentLoad + "/" + capacity + " " + harvestType);
+		offset += 20;
+		
+		return offset;
+	}
+	
 	private void calculateResourceStore() {
 		Building[] buildings = player.GetComponentInChildren<Buildings>().GetComponentsInChildren<Depot>();
 						
@@ -112,23 +138,6 @@ public class Harvester : Unit {
 				}
 			}
 		}	
-	}
-	
-	public override void ActionClick(GameObject hitObject, Vector3 hitPoint, Player controller){
-		base.ActionClick(hitObject, hitPoint, controller);
-		
-		if(player && player.human){
-			if(hitObject.tag != "Terrain"){
-				Resource resource = hitObject.transform.parent.GetComponent<Resource>();
-				
-				if(resource && !resource.isEmpty()){
-					StartHarvest(resource);
-				}
-			}
-			else {
-				StopHarvest();	
-			}
-		}
 	}
 	
 	private void StartHarvest(Resource resource) {
