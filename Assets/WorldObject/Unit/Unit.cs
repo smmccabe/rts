@@ -23,11 +23,8 @@ public class Unit : WorldObject {
     protected override void Update () {
         base.Update();
 		
-		if(rotating) {
-			TurnToTarget();
-		}
-		else if(moving) {
-			MakeMove();	
+		if(!GetComponent<NavMeshAgent>().velocity.Equals(Vector3.zero)){
+			CalculateBounds();
 		}
 		else{
 			idle++;	
@@ -71,18 +68,21 @@ public class Unit : WorldObject {
 		this.destinationTarget = null;
 		
 		this.destination = destination;
-		targetRotation = Quaternion.LookRotation(destination - transform.position);
-		rotating = true;
-		moving = false;
-	}
-	
-	public void StartMove(Vector3 destination, GameObject destinationTarget) {
-		StartMove(destination);
+		//targetRotation = Quaternion.LookRotation(destination - transform.position);
+		//rotating = true;
+		//moving = false;
 		
-		this.destinationTarget = destinationTarget;
+		GetComponent<NavMeshAgent>().SetDestination(destination);
 	}
 	
-	private void TurnToTarget() {
+	public void StartMove(Vector3 destination, GameObject destinationTarget) {		
+		this.destinationTarget = destinationTarget;
+		CalculateTargetDestination();
+		
+		StartMove(destination);
+	}
+	
+	/*private void TurnToTarget() {
 		transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed);
 		
 		Quaternion inverseTargetRotation = new Quaternion(-targetRotation.x, -targetRotation.y, -targetRotation.z, -targetRotation.w);
@@ -95,16 +95,16 @@ public class Unit : WorldObject {
 			}
 		}
 		CalculateBounds();
-	}
+	}*/
 	
-	private void MakeMove() {
+	/*private void MakeMove() {
 		transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * moveSpeed);
 		
 		if(transform.position == destination) {
 			moving = false;
 		}
 		CalculateBounds();
-	}
+	}*/
 	
 	private void CalculateTargetDestination() {
 		int shiftAmount = CalculateShiftAmount(destinationTarget);
