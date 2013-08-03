@@ -59,6 +59,10 @@ public class Worker : Unit {
 	private void CreateBuilding(string buildingName) {
 		Vector3 buildPoint = new Vector3(transform.position.x, transform.position.y, transform.position.z + 10);
 		if(player) {
+			//if we're already doing this for a different building, better cancel it
+			if(player.IsFindingBuildingLocation()){
+				player.CancelBuildingPlacement();
+			}
 			player.CreateBuilding(buildingName, buildPoint, this, playingArea);
 		}
 	}
