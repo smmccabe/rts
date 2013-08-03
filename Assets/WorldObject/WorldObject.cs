@@ -110,8 +110,8 @@ public class WorldObject : MonoBehaviour {
 	
 	public void CalculateBounds() {
 		selectionBounds = new Bounds(transform.position, Vector3.zero);
-		foreach(Renderer r in GetComponentsInChildren<Renderer>()) {
-			selectionBounds.Encapsulate(r.bounds);
+		foreach(Collider collider in GetComponentsInChildren<Collider>()) {
+			selectionBounds.Encapsulate(collider.bounds);
 		}
 	}
 	
